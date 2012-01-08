@@ -43,16 +43,9 @@ trait ScalaModel extends Model {
   case class ObjectLiteral (n:Literal) extends Object
   object ObjectLiteral extends Isomorphic1[Literal, ObjectLiteral]
 
-  sealed abstract class Literal(val lexicalForm:String)
-  case class PlainLiteral(override val lexicalForm:String, langtag:Option[LangTag]) extends Literal(lexicalForm) {
-    override def toString = "\"" + lexicalForm + "\"" + { if (langtag.isDefined) langtag.get }
-  }
-  object PlainLiteral extends Isomorphic2[String, Option[LangTag], PlainLiteral]
-  case class TypedLiteral(override val lexicalForm:String, datatype:IRI) extends Literal(lexicalForm) {
-    override def toString = "\"" + lexicalForm + "\"^^" + datatype
-  }
-  object TypedLiteral extends Isomorphic2[String, IRI, TypedLiteral]
-
+  case class Literal(lexicalForm: String, langtag: Option[LangTag], datatype: Option[IRI])
+  object Literal extends Isomorphic3[String, Option[LangTag], Option[IRI], Literal]
+  
   case class LangTag(s:String)
   object LangTag extends Isomorphic1[String, LangTag]
 

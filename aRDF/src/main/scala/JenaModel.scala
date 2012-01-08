@@ -110,28 +110,25 @@ trait JenaModel extends Model {
       if (node.isLiteral) Some(node.asInstanceOf[Node_Literal]) else None
   }
 
-  type Literal = Node_Literal
-  type PlainLiteral = Node_Literal
-  object PlainLiteral extends Isomorphic2[String, Option[LangTag], PlainLiteral] {
-    def apply(lit:String, langtagOption:Option[LangTag]) =
-      langtagOption match {
-        case Some(LangTag(langtag)) => JenaNode.createLiteral(lit, langtag, false).asInstanceOf[Node_Literal]
-        case None => JenaNode.createLiteral(lit).asInstanceOf[Node_Literal]
-      }
-    def unapply(literal:PlainLiteral):Option[(String, Option[LangTag])] =
-      tryopt { ( literal.getLiteralValue.toString, Option(LangTag(literal.getLiteralLanguage)) ) }
-  }
-  type TypedLiteral = Node_Literal
   lazy val mapper = TypeMapper.getInstance
-  object TypedLiteral extends Isomorphic2[String, IRI, TypedLiteral] {
-    def apply(lit:String, iri:IRI):TypedLiteral = {
-      val IRI(typ) = iri
-      JenaNode.createLiteral(lit, null, mapper.getTypeByName(typ)).asInstanceOf[Node_Literal]
+  type Literal = Node_Literal
+  object Literal extends Isomorphic3[String, Option[LangTag], Option[IRI], Literal] {
+    def apply(lit: String, langtagOption: Option[LangTag], datatypeOption: Option[IRI]): Literal = {
+      JenaNode.createLiteral(
+        lit,
+        langtagOption.map{_.s}.getOrElse(null),
+        datatypeOption.map{i => mapper.getTypeByName(i.iri)}.getOrElse(null)
+      ).asInstanceOf[Literal]
     }
-    def unapply(literal:TypedLiteral):Option[(String, IRI)] =
-      tryopt((literal.getLiteralValue.toString, IRI(literal.getLiteralDatatype.getURI)))
+    def unapply(literal: Literal): Option[(String, Option[LangTag], Option[IRI])] = {
+      tryopt {(
+        literal.getLiteralValue.toString,
+        { val l = literal.getLiteralLanguage; if (l != "") Some(LangTag(l)) else None },
+        Option(literal.getLiteralDatatype).map{typ => IRI(typ.getURI)}
+      )}
+    }
   }
-
+  
   case class LangTag(s:String)
   object LangTag extends Isomorphic1[String, LangTag]
 

@@ -8,15 +8,21 @@ class AbstractTest[M <: Model](m: M) {
     
     import m._
     
-    val g: Graph = Graph(
-        Triple(
-            SubjectNode(NodeIRI(IRI("http://www.w3.org/"))), 
-            PredicateIRI(IRI("http://www.w3.org/predicate")),
-            ObjectLiteral(PlainLiteral("toto", None))
-        )
+    val t = Triple(
+        SubjectNode(NodeIRI(IRI("http://www.w3.org/"))), 
+        PredicateIRI(IRI("http://www.w3.org/predicate")),
+        ObjectLiteral(Literal("toto", None, None))
     )
     
+    val g: Graph = Graph(t)
     
+    t match {
+      case Triple(SubjectNode(NodeIRI(IRI(s))), PredicateIRI(IRI(p)), ObjectLiteral(Literal(o, _, _))) => println(s.toString + p.toString + o.toString)
+      
+      
+    }
+    
+    Literal("toto", None, None) match { case Literal(t, None, None) => () }
     
     println(g)
     

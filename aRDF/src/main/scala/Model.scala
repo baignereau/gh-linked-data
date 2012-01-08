@@ -22,8 +22,6 @@ trait Model {
   type ObjectNode <: Object
   type ObjectLiteral <: Object
   type Literal
-  type PlainLiteral <: Literal
-  type TypedLiteral <: Literal
   type LangTag
 
   val IRI : Isomorphic1[String, IRI]
@@ -49,9 +47,7 @@ trait Model {
   val ObjectNode    : Isomorphic1[Node, ObjectNode]
   val ObjectLiteral : Isomorphic1[Literal, ObjectLiteral]
 
-  val PlainLiteral : Isomorphic2[String, Option[LangTag], PlainLiteral]
-  val TypedLiteral : Isomorphic2[String, IRI, TypedLiteral]
-
+  val Literal : Isomorphic3[String, Option[LangTag], Option[IRI], Literal]
   val LangTag : Isomorphic1[String, LangTag]
 
   // val StringDatatype = IRI("http://www.w3.org/2001/XMLSchema#string")
