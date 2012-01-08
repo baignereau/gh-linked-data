@@ -45,10 +45,15 @@ object YourProjectBuild extends Build {
 
   import BuildSettings._
   
+  val mySettings = Seq(
+    resolvers += "apache-repo-releases" at "http://repository.apache.org/content/repositories/releases/",
+    libraryDependencies += "org.apache.jena" % "jena-arq" % "2.9.0-incubating"
+  )
+  
   lazy val project = Project(
     id = "aRDF",
     base = file("."),
-    settings = buildSettings
+    settings = buildSettings ++ mySettings
   )
 
 
