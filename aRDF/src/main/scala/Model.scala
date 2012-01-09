@@ -27,7 +27,7 @@ trait Model {
   val IRI : Isomorphic1[String, IRI]
 
   trait GraphObject {
-    def empty:Graph
+    def empty: Graph
     def apply(elems:Triple*):Graph
     def apply(it:Iterable[Triple]):Graph
   }

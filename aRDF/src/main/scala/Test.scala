@@ -40,6 +40,20 @@ object Test {
     val tests = Seq(scalaTest, jenaTest)
     tests.foreach { _.test() }
     
+    import com.hp.hpl.jena._
+    import com.hp.hpl.jena.rdf.model._
+    import com.hp.hpl.jena.graph._
+    
+    val model = ModelFactory.createDefaultModel()
+//    model.read("http://www.w3.org/People/Berners-Lee/card")
+    model.getReader("TURTLE").read(model, "file:///tmp/card")
+    
+    val jenaGraph = new JenaModel.Graph(model.getGraph)
+    
+    val scalaGraph: ScalaModel#Graph = JenaToScala.transform(jenaGraph)
+    
+    println(scalaGraph)
+    
   }
   
 }
