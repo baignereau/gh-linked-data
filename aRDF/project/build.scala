@@ -47,7 +47,8 @@ object YourProjectBuild extends Build {
   
   val mySettings = Seq(
     resolvers += "apache-repo-releases" at "http://repository.apache.org/content/repositories/releases/",
-    libraryDependencies += "org.apache.jena" % "jena-arq" % "2.9.0-incubating"
+    libraryDependencies += "org.apache.jena" % "jena-arq" % "2.9.0-incubating",
+    libraryDependencies += "com.novocode" % "junit-interface" % "0.8" % "test"
   )
   
   lazy val project = Project(

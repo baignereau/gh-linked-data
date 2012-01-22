@@ -27,8 +27,8 @@ class Transformer[ModelA <: Model, ModelB <: Model](val a: ModelA, val b: ModelB
   
   def transformNode(n: a.Node): b.Node = {
     n match {
-      case a.NodeIRI(iri) => b.NodeIRI(transformIRI(iri))
       case a.NodeBNode(label) => b.NodeBNode(transformBNode(label))
+      case a.NodeIRI(iri) => b.NodeIRI(transformIRI(iri))
     }
   }
     
@@ -61,5 +61,7 @@ class Transformer[ModelA <: Model, ModelB <: Model](val a: ModelA, val b: ModelB
 }
 
 import org.w3.rdf.jena._
+
+object ScalaToJena extends Transformer[ScalaModel, JenaModel](ScalaModel, JenaModel)
 
 object JenaToScala extends Transformer[JenaModel, ScalaModel](JenaModel, ScalaModel)

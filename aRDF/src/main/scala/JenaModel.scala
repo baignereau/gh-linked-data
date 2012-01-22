@@ -7,17 +7,6 @@ import com.hp.hpl.jena.datatypes.{RDFDatatype, TypeMapper}
 
 import org.w3.isomorphic._
 
-object Util {
-  def tryopt[T](b: => T):Option[T] =
-    try {
-      Some(b)
-    } catch {
-      case e => None
-    }
-}
-
-import Util._
-
 trait JenaModel extends Model {
 
   case class IRI(iri:String) { override def toString = '"' + iri + '"' }
@@ -63,23 +52,22 @@ trait JenaModel extends Model {
     def unapply(t:Triple):Option[(Subject, Predicate, Object)] = Some((t.getSubject, t.getPredicate, t.getObject))
   }
 
-  type BNode = Node_Blank
+  type BNode = JenaNode
   object BNode extends Isomorphic1[String, BNode] {
     def apply(label:String):BNode = { val id = AnonId.create(label) ; JenaNode.createAnon(id).asInstanceOf[Node_Blank] }
-    def unapply(bn:BNode):Option[String] = tryopt(bn.getBlankNodeId.getLabelString)
+    def unapply(bn:BNode):Option[String] = if (bn.isBlank) Some(bn.getBlankNodeId.getLabelString) else None
   }
 
   type Node = JenaNode
-  type NodeIRI = Node_URI
+  type NodeIRI = Node
   object NodeIRI extends Isomorphic1[IRI, NodeIRI] {
-    def apply(iri:IRI):NodeIRI = { val IRI(s) = iri ; JenaNode.createURI(s).asInstanceOf[Node_URI] }
-    def unapply(node:NodeIRI):Option[IRI] = tryopt(IRI(node.getURI))
+    def apply(iri: IRI): NodeIRI = { val IRI(s) = iri ; JenaNode.createURI(s).asInstanceOf[Node_URI] }
+    def unapply(node: NodeIRI): Option[IRI] = if (node.isURI) Some(IRI(node.getURI)) else None
   }
-  type NodeBNode = Node_Blank
+  type NodeBNode = JenaNode
   object NodeBNode extends Isomorphic1[BNode, NodeBNode] {
     def apply(node:BNode):NodeBNode = node
-    def unapply(node:NodeBNode):Option[BNode] =
-      if (node.isBlank) Some(node) else None
+    def unapply(node:NodeBNode):Option[BNode] = if (node.isBlank) Some(node) else None
   }
 
   type Subject = JenaNode
@@ -92,8 +80,8 @@ trait JenaModel extends Model {
   type Predicate = JenaNode
   type PredicateIRI = JenaNode
   object PredicateIRI extends Isomorphic1[IRI, PredicateIRI] {
-    def apply(iri:IRI):PredicateIRI = { val IRI(s) = iri ; JenaNode.createURI(s) }
-    def unapply(node:PredicateIRI):Option[IRI] = tryopt(IRI(node.getURI))
+    def apply(iri: IRI): PredicateIRI = { val IRI(s) = iri ; JenaNode.createURI(s) }
+    def unapply(node: PredicateIRI): Option[IRI] = if (node.isURI) Some(IRI(node.getURI)) else None
   }
 
   type Object = JenaNode
@@ -111,7 +99,7 @@ trait JenaModel extends Model {
   }
 
   lazy val mapper = TypeMapper.getInstance
-  type Literal = Node_Literal
+  type Literal = JenaNode
   object Literal extends Isomorphic3[String, Option[LangTag], Option[IRI], Literal] {
     def apply(lit: String, langtagOption: Option[LangTag], datatypeOption: Option[IRI]): Literal = {
       JenaNode.createLiteral(
@@ -120,13 +108,14 @@ trait JenaModel extends Model {
         datatypeOption.map{i => mapper.getTypeByName(i.iri)}.getOrElse(null)
       ).asInstanceOf[Literal]
     }
-    def unapply(literal: Literal): Option[(String, Option[LangTag], Option[IRI])] = {
-      tryopt {(
-        literal.getLiteralValue.toString,
-        { val l = literal.getLiteralLanguage; if (l != "") Some(LangTag(l)) else None },
-        Option(literal.getLiteralDatatype).map{typ => IRI(typ.getURI)}
-      )}
-    }
+    def unapply(literal: Literal): Option[(String, Option[LangTag], Option[IRI])] =
+      if (literal.isLiteral)
+        Some((
+          literal.getLiteralLexicalForm.toString,
+          { val l = literal.getLiteralLanguage; if (l != "") Some(LangTag(l)) else None },
+          Option(literal.getLiteralDatatype).map{typ => IRI(typ.getURI)}))
+      else
+        None
   }
   
   case class LangTag(s:String)
