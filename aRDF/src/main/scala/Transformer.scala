@@ -7,7 +7,7 @@ package org.w3.rdf
 
 class Transformer[ModelA <: Model, ModelB <: Model](val a: ModelA, val b: ModelB) {
   
-  def transform(graph: ModelA#Graph): b.Graph =
+  def transform(graph: ModelA#Graph): ModelB#Graph =
     b.Graph(graph map (transformTriple _))
     
   def transformTriple(t: ModelA#Triple): b.Triple = {
@@ -15,7 +15,7 @@ class Transformer[ModelA <: Model, ModelB <: Model](val a: ModelA, val b: ModelB
     b.Triple(transformSubject(s), transformPredicate(p), transformObject(o))
   }
   
-  def transformIRI(iri: ModelA#IRI): b.IRI = {
+  def transformIRI(iri: a.IRI): b.IRI = {
     val a.IRI(i) = iri
     b.IRI(i)
   }
@@ -60,8 +60,3 @@ class Transformer[ModelA <: Model, ModelB <: Model](val a: ModelA, val b: ModelB
   
 }
 
-import org.w3.rdf.jena._
-
-object ScalaToJena extends Transformer[ScalaModel, JenaModel](ScalaModel, JenaModel)
-
-object JenaToScala extends Transformer[JenaModel, ScalaModel](JenaModel, ScalaModel)

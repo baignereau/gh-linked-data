@@ -12,7 +12,7 @@ trait JenaModel extends Model {
   case class IRI(iri:String) { override def toString = '"' + iri + '"' }
   object IRI extends Isomorphic1[String, IRI]
 
-  class Graph(val jenaGraph:JenaGraph) extends GraphLike {
+  class Graph(val jenaGraph: JenaGraph) extends GraphLike {
     def iterator:Iterator[Triple] = new Iterator[Triple] {
       val iterator = jenaGraph.find(JenaNode.ANY, JenaNode.ANY, JenaNode.ANY)
       def hasNext = iterator.hasNext
@@ -37,6 +37,7 @@ trait JenaModel extends Model {
   }
 
   object Graph extends GraphObject {
+    def fromJena(jenaGraph: JenaGraph): Graph = new Graph(jenaGraph)
     def empty:Graph = new Graph(Factory.createDefaultGraph)
     def apply(elems:Triple*):Graph = apply(elems.toIterable)
     def apply(it:Iterable[Triple]):Graph = {
@@ -122,5 +123,3 @@ trait JenaModel extends Model {
   object LangTag extends Isomorphic1[String, LangTag]
 
 }
-
-object JenaModel extends JenaModel
