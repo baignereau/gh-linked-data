@@ -1,16 +1,12 @@
 package org.w3.rdf
 
 
-
-
-
-
 class Transformer[ModelA <: Model, ModelB <: Model](val a: ModelA, val b: ModelB) {
   
-  def transform(graph: ModelA#Graph): ModelB#Graph =
+  def transform(graph: a.Graph): b.Graph =
     b.Graph(graph map (transformTriple _))
     
-  def transformTriple(t: ModelA#Triple): b.Triple = {
+  def transformTriple(t: a.Triple): b.Triple = {
     val a.Triple(s, p, o) = t
     b.Triple(transformSubject(s), transformPredicate(p), transformObject(o))
   }
