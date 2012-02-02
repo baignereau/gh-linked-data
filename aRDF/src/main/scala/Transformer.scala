@@ -1,10 +1,9 @@
 package org.w3.rdf
 
-
 class Transformer[ModelA <: Model, ModelB <: Model](val a: ModelA, val b: ModelB) {
-  
+
   def transform(graph: a.Graph): b.Graph =
-    b.Graph(graph map (transformTriple _))
+    b.Graph(graph map transformTriple)
     
   def transformTriple(t: a.Triple): b.Triple = {
     val a.Triple(s, p, o) = t
@@ -56,3 +55,8 @@ class Transformer[ModelA <: Model, ModelB <: Model](val a: ModelA, val b: ModelB
   
 }
 
+import org.w3.rdf.jena.JenaModel
+
+object ScalaToJena extends Transformer[ScalaModel.type, JenaModel.type](ScalaModel, JenaModel)
+  
+object JenaToScala extends Transformer[JenaModel.type, ScalaModel.type](JenaModel, ScalaModel)

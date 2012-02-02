@@ -6,7 +6,7 @@ trait Model {
 
   type IRI
   trait GraphLike extends Iterable[Triple] { self =>
-    def ++(other:Graph):Graph
+    def ++(other: Graph):Graph
   }
   type Graph <: GraphLike
   type Triple
@@ -24,37 +24,31 @@ trait Model {
   type Literal
   type LangTag
 
-  val IRI : Isomorphic1[String, IRI]
+  val IRI : AlgebraicDataType1[String, IRI]
 
   trait GraphObject {
     def empty: Graph
-    def apply(elems:Triple*):Graph
-    def apply(it:Iterable[Triple]):Graph
+    def apply(elems: Triple*): Graph
+    def apply(it: Iterable[Triple]): Graph
   }
-  val Graph : GraphObject
+  val Graph: GraphObject
 
-  val Triple : Isomorphic3[Subject, Predicate, Object, Triple]
+  val Triple: AlgebraicDataType3[Subject, Predicate, Object, Triple]
 
-  val BNode : Isomorphic1[String, BNode]
+  val BNode: AlgebraicDataType1[String, BNode]
 
-  val NodeIRI   : Isomorphic1[IRI, NodeIRI]
-  val NodeBNode : Isomorphic1[BNode, NodeBNode]
+  val NodeIRI: AlgebraicDataType1[IRI, NodeIRI]
+  val NodeBNode: AlgebraicDataType1[BNode, NodeBNode]
 
-  val SubjectNode : Isomorphic1[Node, SubjectNode]
+  val SubjectNode: AlgebraicDataType1[Node, SubjectNode]
 
-  val PredicateIRI : Isomorphic1[IRI, PredicateIRI]
+  val PredicateIRI: AlgebraicDataType1[IRI, PredicateIRI]
 
-  val ObjectNode    : Isomorphic1[Node, ObjectNode]
-  val ObjectLiteral : Isomorphic1[Literal, ObjectLiteral]
+  val ObjectNode: AlgebraicDataType1[Node, ObjectNode]
+  val ObjectLiteral: AlgebraicDataType1[Literal, ObjectLiteral]
 
-  val Literal : Isomorphic3[String, Option[LangTag], Option[IRI], Literal]
-  val LangTag : Isomorphic1[String, LangTag]
-
-  // val StringDatatype = IRI("http://www.w3.org/2001/XMLSchema#string")
-  // val IntegerDatatype = IRI("http://www.w3.org/2001/XMLSchema#integer")
-  // val FloatDatatype = IRI("http://www.w3.org/2001/XMLSchema#float")
-  // val DateDatatype = IRI("http://www.w3.org/2001/XMLSchema#date")
-  // val DateTimeDatatype = IRI("http://www.w3.org/2001/XMLSchema#dateTime")
+  val Literal: AlgebraicDataType3[String, Option[LangTag], Option[IRI], Literal]
+  val LangTag: AlgebraicDataType1[String, LangTag]
 
 }
 
