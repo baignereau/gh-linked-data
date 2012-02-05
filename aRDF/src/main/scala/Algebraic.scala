@@ -1,4 +1,4 @@
-package org.w3.isomorphic
+package org.w3.algebraic
 
 trait UnApply0[R] {
   def unapply(r: R): Boolean
