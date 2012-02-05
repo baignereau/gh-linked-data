@@ -7,7 +7,10 @@ class Transformer[ModelA <: Model, ModelB <: Model](val a: ModelA, val b: ModelB
     
   def transformTriple(t: a.Triple): b.Triple = {
     val a.Triple(s, p, o) = t
-    b.Triple(transformNode(s), transformIRI(p), transformNode(o))
+    b.Triple(
+      transformNode(s),
+      transformIRI(p),
+      transformNode(o))
   }
   
   def transformNode(n: a.Node): b.Node = n match {

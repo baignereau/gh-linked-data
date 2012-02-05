@@ -54,19 +54,19 @@ object JenaModel extends Model {
       if (node.isURI || node.isBlank || node.isLiteral) Some(node) else None
   }
 
-  type NodeIRI = Node_URI
+  type NodeIRI = JenaNode
   object NodeIRI extends AlgebraicDataType1[IRI, NodeIRI] {
     def apply(iri: IRI): NodeIRI = { val IRI(s) = iri ; JenaNode.createURI(s).asInstanceOf[Node_URI] }
     def unapply(node: NodeIRI): Option[IRI] = if (node.isURI) Some(IRI(node.getURI)) else None
   }
 
-  type NodeBNode = Node_Blank
+  type NodeBNode = JenaNode
   object NodeBNode extends AlgebraicDataType1[BNode, NodeBNode] {
     def apply(node: BNode): NodeBNode = node
     def unapply(node: NodeBNode): Option[BNode] = if (node.isBlank) Some(node.asInstanceOf[Node_Blank]) else None
   }
 
-  type NodeLiteral = Node_Literal
+  type NodeLiteral = JenaNode
   object NodeLiteral extends AlgebraicDataType1[Literal, NodeLiteral] {
     def apply(literal: Literal): NodeLiteral = literal
     def unapply(node: NodeLiteral): Option[Literal] =
