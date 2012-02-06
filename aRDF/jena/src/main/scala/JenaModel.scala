@@ -76,7 +76,7 @@ object JenaModel extends Model {
   case class IRI(iri: String) { override def toString = '"' + iri + '"' }
   object IRI extends AlgebraicDataType1[String, IRI]
 
-  type BNode = Node_Blank
+  type BNode = JenaNode
   object BNode extends AlgebraicDataType1[String, BNode] {
     def apply(label: String): BNode = {
       val id = AnonId.create(label)
@@ -88,7 +88,7 @@ object JenaModel extends Model {
 
   lazy val mapper = TypeMapper.getInstance
   
-  type Literal = Node_Literal
+  type Literal = JenaNode
   object Literal extends AlgebraicDataType3[String, Option[LangTag], Option[IRI], Literal] {
     def apply(lit: String, langtagOption: Option[LangTag], datatypeOption: Option[IRI]): Literal = {
       JenaNode.createLiteral(

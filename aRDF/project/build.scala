@@ -66,7 +66,13 @@ object YourProjectBuild extends Build {
     id = "jena",
     base = file("jena"),
     settings = buildSettings ++ jenaDeps ++ testDeps
-  ) dependsOn (rdfModel, graphIsomorphism, transformer)
+  ) dependsOn (rdfModel, graphIsomorphism, transformer, nTriplesParser)
 
+  lazy val nTriplesParser = Project(
+    id = "n-triples-parser",
+    base = file("n-triples-parser"),
+    settings = buildSettings ++ jenaDeps ++ testDeps
+  ) dependsOn (rdfModel)
+  
 }
 
