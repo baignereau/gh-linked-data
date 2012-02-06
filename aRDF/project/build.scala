@@ -19,23 +19,54 @@ object YourProjectBuild extends Build {
 
   import BuildSettings._
   
-  val mySettings = Seq(
-    resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-    resolvers += "apache-repo-releases" at "http://repository.apache.org/content/repositories/releases/",
-//    resolvers += Resolver.url("Play", url("http://download.playframework.org/ivy-releases/"))(Resolver.ivyStylePatterns),
-    libraryDependencies += "org.apache.jena" % "jena-arq" % "2.9.0-incubating",
-    libraryDependencies += "com.novocode" % "junit-interface" % "0.8" % "test",
-//    libraryDependencies += "com.typesafe" %% "play-mini" % "2.0-RC1-SNAPSHOT",
-//    mainClass in (Compile, run) := Some("play.core.server.NettyServer")
-    libraryDependencies += "com.typesafe.akka" % "akka-actor" % "2.0-M3"
+  val testDeps =
+    Seq(libraryDependencies += "com.novocode" % "junit-interface" % "0.8" % "test")
+  
+  val jenaDeps =
+    Seq(
+      resolvers += "apache-repo-releases" at "http://repository.apache.org/content/repositories/releases/",
+      libraryDependencies += "org.apache.jena" % "jena-arq" % "2.9.0-incubating")
+      
+  lazy val pimpMyRdf = Project(
+    id = "pimp-my-rdf",
+    base = file("."),
+    settings = buildSettings,
+    aggregate = Seq(
+      algebraic,
+      rdfModel,
+      graphIsomorphism,
+      transformer,
+      jena))
+  
+  lazy val algebraic = Project(
+    id = "algebraic",
+    base = file("algebraic"),
+    settings = buildSettings
   )
   
-  lazy val project = Project(
-    id = "aRDF",
-    base = file("."),
-    settings = buildSettings ++ mySettings
-  )
+  lazy val rdfModel = Project(
+    id = "rdf-model",
+    base = file("rdf-model"),
+    settings = buildSettings
+  ) dependsOn (algebraic)
 
+  lazy val graphIsomorphism = Project(
+    id = "graph-isomorphism",
+    base = file("graph-isomorphism"),
+    settings = buildSettings
+  ) dependsOn (rdfModel)
+
+  lazy val transformer = Project(
+    id = "transformer",
+    base = file("transformer"),
+    settings = buildSettings
+  ) dependsOn (rdfModel)
+  
+  lazy val jena = Project(
+    id = "jena",
+    base = file("jena"),
+    settings = buildSettings ++ jenaDeps ++ testDeps
+  ) dependsOn (rdfModel, graphIsomorphism, transformer)
 
 }
 

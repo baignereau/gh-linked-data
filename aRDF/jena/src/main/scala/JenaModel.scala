@@ -86,39 +86,6 @@ object JenaModel extends Model {
       if (bn.isBlank) Some(bn.getBlankNodeId.getLabelString) else None
   }
 
-//  type Subject = JenaNode
-//  type SubjectNode = JenaNode
-//  object SubjectNode extends AlgebraicDataType1[Node, SubjectNode] {
-//    def apply(node: Node): SubjectNode = node
-//    def unapply(node: SubjectNode): Option[Node] = Some(node)
-//  }
-//  type SubjectLiteral = JenaNode
-//  object SubjectLiteral extends AlgebraicDataType1[Node, SubjectLiteral] {
-//    def apply(node: Node): SubjectLiteral = node
-//    def unapply(node: SubjectLiteral): Option[Node] = Some(node)
-//  }
-//
-//  type Predicate = JenaNode
-//  type PredicateIRI = JenaNode
-//  object PredicateIRI extends AlgebraicDataType1[IRI, PredicateIRI] {
-//    def apply(iri: IRI): PredicateIRI = { val IRI(s) = iri ; JenaNode.createURI(s) }
-//    def unapply(node: PredicateIRI): Option[IRI] = if (node.isURI) Some(IRI(node.getURI)) else None
-//  }
-//
-//  type Object = JenaNode
-//  type ObjectNode = JenaNode
-//  object ObjectNode extends AlgebraicDataType1[Node, ObjectNode] {
-//    def apply(node: Node): ObjectNode = node
-//    def unapply(node: ObjectNode): Option[Node] =
-//      if (node.isURI || node.isBlank) Some(node) else None
-//  }
-//  type ObjectLiteral = JenaNode
-//  object ObjectLiteral extends AlgebraicDataType1[Literal, ObjectLiteral] {
-//    def apply(literal: Literal): ObjectLiteral = literal
-//    def unapply(node: ObjectLiteral): Option[Literal] =
-//      if (node.isLiteral) Some(node.asInstanceOf[Node_Literal]) else None
-//  }
-
   lazy val mapper = TypeMapper.getInstance
   
   type Literal = Node_Literal

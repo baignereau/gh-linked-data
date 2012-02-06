@@ -39,9 +39,3 @@ class Transformer[ModelA <: Model, ModelB <: Model](val a: ModelA, val b: ModelB
   }
   
 }
-
-import org.w3.rdf.jena.JenaModel
-
-object ScalaToJena extends Transformer[ScalaModel.type, JenaModel.type](ScalaModel, JenaModel)
-  
-object JenaToScala extends Transformer[JenaModel.type, ScalaModel.type](JenaModel, ScalaModel)
